@@ -14,4 +14,4 @@ var friendsData = [
   }
 ];
 
-module.exports = tableArray;
+module.exports = friendsData;
