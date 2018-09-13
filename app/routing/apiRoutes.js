@@ -29,7 +29,7 @@ module.exports = function(app) {
 
     //Lets create an array of all the score difference totals.
     var scoreDifferencesArray = [];
-
+    var identicalData = false;
     //Next we will create a for loop to execute our 'array subtraction' with the users score
     //and every other users score in our database.
     for (var i = 0; i < friendsData.length; i++) {
@@ -41,14 +41,21 @@ module.exports = function(app) {
       //add a continue statement in our for loop so that it 'jumps over'
       //one interation when it compares name, image, and score array of the
       //current user and an identical user in the database.
-      // if (userName === friendsData[i].name) {
-      //   //Lets add in a dummy null at the index where the user sees themselves
-      //   //in the database
-      //   scoreDifferencesArray.push(null);
-      //   //Here is the keyword used in a for loop to skip/jump over
-      //   //the iteration where the if condition is met.
-      //   continue;
-      // }
+      if (userName === friendsData[i].name) {
+        //Lets add an arbitrary value that can never be reached at
+        //the index where the user sees themselves in the database
+        //(I tried null, but that causes an issue where once the user
+        //hits the submit button a second time without changing any information
+        //on the form, the modal won't appear again. Unlike the solution with an arbitrary value
+        //that can never be reached, the user can press the submit button a second time
+        //without changing anything and have the modal appear).
+        scoreDifferencesArray.push(999);
+        identicalData = true;
+
+        //Here is the keyword used in a for loop to skip/jump over
+        //the iteration where the if condition is met.
+        continue;
+      }
 
       //This loop will be to go through our scores array
       for (var j = 0; j < userScore.length; j++) {
@@ -66,7 +73,14 @@ module.exports = function(app) {
     var bestFriendIndex = scoreDifferencesArray.indexOf(
       Math.min.apply(null, scoreDifferencesArray)
     );
+
+    //Here we have our response
     res.json(friendsData[bestFriendIndex]);
-    friendsData.push(req.body);
+
+    //I would like to add validation to this array push so that if the data already exists it
+    //won't push the same req.body and create duplicates.
+    if (!identicalData) {
+      friendsData.push(req.body);
+    }
   });
 };
