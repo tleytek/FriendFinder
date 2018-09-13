@@ -22,9 +22,10 @@ module.exports = function(app) {
   });
 
   app.post("/api/friends", function(req, res) {
-    friendsData.push(req.body);
     // First lets put the users score into a variable so we aren't playing around with hardcode
     var userScore = req.body.scores;
+    var userName = req.body.name;
+    var userPhoto = req.body.photo;
 
     //Lets create an array of all the score difference totals.
     var scoreDifferencesArray = [];
@@ -35,6 +36,19 @@ module.exports = function(app) {
       //Start the loop with a fresh scoreDifferences so that when we compare scores of a new user
       //we aren't mixing old score differences
       var scoreDifferences = 0;
+
+      //So we don't get ourselves as a best friend result we are going to
+      //add a continue statement in our for loop so that it 'jumps over'
+      //one interation when it compares name, image, and score array of the
+      //current user and an identical user in the database.
+      if (userName === friendsData[i].name) {
+        //Lets add in a dummy null at the index where the user sees themselves
+        //in the database
+        scoreDifferencesArray.push(null);
+        //Here is the keyword used in a for loop to skip/jump over
+        //the iteration where the if condition is met.
+        continue;
+      }
 
       //This loop will be to go through our scores array
       for (var j = 0; j < userScore.length; j++) {
@@ -49,10 +63,10 @@ module.exports = function(app) {
     //number and ask for the index it is in. This should give us the user with the least
     //score difference since that users index should be the same index location as our
     //scoreDifferencesArray
-
     var bestFriendIndex = scoreDifferencesArray.indexOf(
       Math.min.apply(null, scoreDifferencesArray)
     );
     res.json(friendsData[bestFriendIndex]);
+    friendsData.push(req.body);
   });
 };
