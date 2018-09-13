@@ -25,7 +25,7 @@ module.exports = function(app) {
     // First lets put the users score into a variable so we aren't playing around with hardcode
     var userScore = req.body.scores;
     var userName = req.body.name;
-    // var userPhoto = req.body.photo;
+    var userPhoto = req.body.photo;
 
     //Lets create an array of all the score difference totals.
     var scoreDifferencesArray = [];
@@ -64,7 +64,7 @@ module.exports = function(app) {
     //score difference since that users index should be the same index location as our
     //scoreDifferencesArray
     var bestFriendIndex = scoreDifferencesArray.indexOf(
-      Math.min.apply(scoreDifferencesArray)
+      Math.min.apply(null, scoreDifferencesArray)
     );
     res.json(friendsData[bestFriendIndex]);
     friendsData.push(req.body);
