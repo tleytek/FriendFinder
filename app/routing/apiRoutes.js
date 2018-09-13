@@ -49,7 +49,10 @@ module.exports = function(app) {
     //number and ask for the index it is in. This should give us the user with the least
     //score difference since that users index should be the same index location as our
     //scoreDifferencesArray
-    var bestFriend = friendsData[indexOf(Math.min(scoreDifferencesArray))];
-    res.json(bestFriend);
+
+    var bestFriendIndex = scoreDifferencesArray.indexOf(
+      Math.min.apply(null, scoreDifferencesArray)
+    );
+    res.json(friendsData[bestFriendIndex]);
   });
 };
